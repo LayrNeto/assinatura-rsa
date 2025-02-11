@@ -49,10 +49,8 @@ def decode_message(signed_message: bytes, public_key: Tuple[int, int]) -> Tuple[
 
     block_len = (public_key[0].bit_length() + 7) // 8 
 
-    try:
-        message, sign = signed_message.rsplit(b"|", 1) 
-    except ValueError:
-        return b"", False
+    message = signed_message[:-1 - block_len]
+    sign = signed_message[-block_len:]
 
     padded_blocks = []
     while len(message) > block_len:
@@ -70,7 +68,7 @@ def decode_message(signed_message: bytes, public_key: Tuple[int, int]) -> Tuple[
     mensagem = b"".join(messages)
 
     print(f"🔹 Mensagem extraída: {mensagem}")  # Debug
-    print(f"🔹 Assinatura extraída: {int.from_bytes(sign)}")  # Debug
+    print(f"🔹 Assinatura extraída: {int.from_bytes(sign, byteorder='big')}")  # Debug
     print("=============================================================")
     booleano = signature.verify_signature(mensagem, sign, rsa.rsa_decryption, public_key)
 

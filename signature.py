@@ -31,8 +31,8 @@ def sign_message(
     signature = rsa_encryption(message_hash, private_key)
     signed_bytes = signature.to_bytes((private_key[0].bit_length() + 7) // 8, byteorder="big")
 
-    global_vars["Assinatura depois do RSA"] = int.from_bytes(signed_bytes)
-    print(f"🔹 Assinatura gerada pós RSA: {int.from_bytes(signed_bytes)}")  
+    global_vars["Assinatura depois do RSA"] = int.from_bytes(signed_bytes, byteorder="big")
+    print(f"🔹 Assinatura gerada pós RSA: {int.from_bytes(signed_bytes, byteorder='big')}")  
 
     return signed_bytes
 
@@ -65,7 +65,7 @@ def verify_signature(
     print(f"🔹 Assinatura da mensagem original antes do RSA: {message_hash}")  # Debug
 
 
-    decrypted_hash = rsa_decryption(int.from_bytes(signature), public_key)
+    decrypted_hash = rsa_decryption(int.from_bytes(signature, byteorder='big'), public_key)
     print(f"🔹 Hash descriptografado da assinatura: {decrypted_hash}")  # Debug
     
     return message_hash == decrypted_hash
